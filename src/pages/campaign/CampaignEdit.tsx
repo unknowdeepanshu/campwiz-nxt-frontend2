@@ -13,10 +13,10 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import utc from "dayjs/plugin/utc";
 import dayjs from "dayjs";
 import { type ActionDispatch } from "react";
-
+import UserInput from "../../components/user/UserInput";
 import CheckBox from "@mui/material/Checkbox";
-import { t, type TFunction } from "i18next";
-import UserInput from "@/components/user/UserInput";
+import { useTranslation } from "@root/i18n/client";
+
 dayjs.extend(utc);
 const CampaignEditForm = ({
   dispatch,
@@ -29,8 +29,8 @@ const CampaignEditForm = ({
   loading: boolean;
   disabled?: boolean;
   disableOnPrivate?: boolean;
-  t: TFunction;
 }) => {
+  const { t } = useTranslation();
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <TextField
@@ -61,7 +61,7 @@ const CampaignEditForm = ({
           )}
           sx={{ width: { xs: "100%", sm: "40%" }, mb: 1 }}
           value={campaign.language}
-          onChange={(_, value) => dispatch({ language: value ?? "" })}
+          onChange={(_, value) => dispatch({ language: value as string })}
           disabled={loading || disabled}
         />
         <DatePicker
@@ -81,7 +81,6 @@ const CampaignEditForm = ({
           timezone="UTC"
         />
       </div>
-
       <UserInput
         value={campaign.coordinators}
         onChange={(coordinators) => dispatch({ coordinators })}
@@ -121,7 +120,7 @@ const CampaignEditForm = ({
       <FormControlLabel
         control={
           <CheckBox
-            value={campaign.isPublic}
+            checked={campaign.isPublic}
             onChange={(e) => dispatch({ isPublic: e.target.checked })}
             disabled={loading || disabled}
           />

@@ -25,7 +25,7 @@ const UserInput = (props: UserInputProps) => {
     );
   };
   const { isLoading, data: options } = useSWR(
-    inputValue === "" ? null : base + inputValue,
+    inputValue === "" ? null : base + encodeURIComponent(inputValue),
     fetcher,
     {
       onLoadingSlow(key, config) {
@@ -43,7 +43,7 @@ const UserInput = (props: UserInputProps) => {
       getOptionLabel={(option) => option}
       filterSelectedOptions
       value={props.value}
-      onError={(e) => console.error(e)}
+      onError={(e) => console.error(e, "this error")}
       disabled={props.disabled}
       loading={isLoading}
       onChange={(_, updatedUsers) => props.onChange(updatedUsers)}
