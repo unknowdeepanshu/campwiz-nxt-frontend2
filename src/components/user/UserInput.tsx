@@ -1,6 +1,6 @@
 import type { WikimediaUsername } from "@/types/__";
 import { Autocomplete, TextField } from "@mui/material";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import useSWR from "swr";
 
 type UserInputProps = {
@@ -14,16 +14,19 @@ type UserInputProps = {
 const base = `https://commons.wikimedia.org/w/api.php?action=query&list=allusers&aulimit=10&format=json&origin=*&auprefix=`;
 const UserInput = (props: UserInputProps) => {
   const [inputValue, setInputValue] = useState<string>("");
-  const fetcher = async (url: string) => {
-    if (props.allowList && props.allowList.length > 0) {
-      return props.allowList;
-    }
-    const response = await fetch(url);
-    const data = await response.json();
-    return (
-      data?.query.allusers.map((user: { name: string }) => user.name) ?? []
-    );
-  };
+  const fetcher = useCallback(
+    async (url: string) => {
+      if (props.allowList && props.allowList.length > 0) {
+        return props.allowList;
+      }
+      const response = await fetch(url);
+      const data = await response.json();
+      return (
+        data?.query.allusers.map((user: { name: string }) => user.name) ?? []
+      );
+    },
+    [props.allowList],
+  );
   const { isLoading, data: options } = useSWR(
     inputValue === "" ? null : base + encodeURIComponent(inputValue),
     fetcher,
